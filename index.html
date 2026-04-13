@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSR YEAMIN — Like Sender</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:    #f0c040;
+  --gold2:   #ffd97a;
+  --gold3:   #c8960c;
+  --pur:     #9333ea;
+  --pur2:    #6d28d9;
+  --pur3:    #c084fc;
+  --bg:      #07030f;
+  --bg2:     #0e0524;
+  --card:    rgba(14,5,36,0.93);
+  --border:  rgba(240,192,64,0.14);
+  --text:    #f0e8ff;
+  --muted:   #7060a0;
+  --green:   #4ade80;
+  --red:     #f87171;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  font-family:'Exo 2',sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CURSOR */
+#cur{width:9px;height:9px;background:var(--gold);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);box-shadow:0 0 12px var(--gold),0 0 28px rgba(240,192,64,.45);}
+#cur-ring{width:34px;height:34px;border:1px solid rgba(240,192,64,.35);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);}
+
+/* BACKGROUND */
+#bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 65% 50% at 18% 12%, rgba(147,51,234,.2) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 40% at 82% 88%, rgba(109,40,217,.15) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 50%, rgba(7,3,15,0) 0%, var(--bg) 80%);}
+#bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(240,192,64,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(240,192,64,.022) 1px,transparent 1px);
+  background-size:50px 50px;animation:gMove 40s linear infinite;}
+@keyframes gMove{to{background-position:50px 50px;}}
+#bg-stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.star{position:absolute;border-radius:50%;animation:twinkle linear infinite;}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1)}}
+#vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 90% 85% at 50% 50%, transparent 25%, rgba(7,3,15,.9) 100%);}
+
+/* LAYOUT */
+.wrap{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:0 20px 60px;}
+
+/* HEADER */
+header{padding:58px 10px 42px;text-align:center;position:relative;}
+.hd-top-bar{position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold3),var(--gold),rgba(255,255,255,.7),var(--gold),var(--gold3),transparent);
+  opacity:.6;}
+.hd-corner{position:absolute;width:44px;height:44px;}
+.hd-corner::before,.hd-corner::after{content:'';position:absolute;background:var(--gold);opacity:.4;border-radius:1px;}
+.hd-corner::before{width:100%;height:1px;top:0;}
+.hd-corner::after{width:1px;height:100%;top:0;}
+.hd-corner.tl{top:16px;left:0;}
+.hd-corner.tr{top:16px;right:0;transform:scaleX(-1);}
+.hd-corner.bl{bottom:2px;left:0;transform:scaleY(-1);}
+.hd-corner.br{bottom:2px;right:0;transform:scale(-1);}
+
+.logo-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:9px;color:rgba(192,132,252,.55);text-transform:uppercase;margin-bottom:16px;animation:ePulse 4s ease-in-out infinite;}
+@keyframes ePulse{0%,100%{opacity:.4}50%{opacity:.85}}
+.logo{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(24px,5.8vw,54px);letter-spacing:7px;line-height:1.05;
+  background:linear-gradient(135deg,var(--gold3) 0%,var(--gold2) 30%,#fff 50%,var(--gold2) 70%,var(--gold3) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 22px rgba(240,192,64,.4));
+  animation:lShine 6s ease-in-out infinite;}
+@keyframes lShine{0%,100%{filter:drop-shadow(0 0 22px rgba(240,192,64,.35))}50%{filter:drop-shadow(0 0 45px rgba(240,192,64,.75)) drop-shadow(0 0 80px rgba(147,51,234,.35))}}
+.logo-sub{font-family:'Cinzel',serif;font-weight:400;font-size:clamp(13px,2.6vw,24px);letter-spacing:12px;color:var(--pur3);margin-top:6px;opacity:.75;filter:drop-shadow(0 0 10px rgba(192,132,252,.35));}
+.divider{width:300px;max-width:78%;height:1px;margin:20px auto;position:relative;
+  background:linear-gradient(90deg,transparent,var(--gold3),var(--gold),rgba(255,255,255,.6),var(--gold),var(--gold3),transparent);
+  animation:divBreath 3.5s ease-in-out infinite;}
+.divider::before,.divider::after{content:'◆';position:absolute;top:50%;transform:translateY(-50%);font-size:7px;color:var(--gold);}
+.divider::before{left:-14px;}
+.divider::after{right:-14px;}
+@keyframes divBreath{0%,100%{opacity:.45}50%{opacity:1;box-shadow:0 0 14px var(--gold);}}
+.tagline{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:4px;color:rgba(112,96,160,.7);text-transform:uppercase;margin-top:12px;}
+
+/* STATUS ROW */
+.srow{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 16px;
+  padding:13px 18px;background:rgba(14,5,36,.85);border:1px solid var(--border);
+  border-radius:7px;margin-bottom:26px;backdrop-filter:blur(20px);position:relative;overflow:hidden;}
+.srow::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  animation:sweep 6s linear infinite;opacity:.4;}
+@keyframes sweep{0%{background-position:-100% 0}100%{background-position:300% 0}}
+.si{display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);letter-spacing:1px;}
+.sdot{width:6px;height:6px;border-radius:50%;animation:dPulse 1.8s ease-in-out infinite;}
+.sdot.g{background:var(--green);box-shadow:0 0 6px var(--green);}
+.sdot.p{background:var(--pur3);box-shadow:0 0 6px var(--pur3);animation-delay:.4s;}
+.sdot.y{background:var(--gold);box-shadow:0 0 6px var(--gold);animation-delay:.8s;}
+.sdot.r{background:var(--red);box-shadow:0 0 6px var(--red);animation-delay:.2s;}
+@keyframes dPulse{0%,100%{opacity:1}50%{opacity:.2}}
+.tbtn{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);border:1px solid rgba(240,192,64,.3);padding:4px 14px;border-radius:4px;text-decoration:none;letter-spacing:2px;background:rgba(240,192,64,.05);transition:all .2s;}
+.tbtn:hover{background:rgba(240,192,64,.12);border-color:var(--gold);box-shadow:0 0 14px rgba(240,192,64,.28);}
+
+/* NOTICE */
+.notice{display:none;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.4);border-radius:7px;padding:16px 22px;margin-bottom:22px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#fca5a5;text-align:center;letter-spacing:1px;}
+.notice.show{display:block;animation:nGlow 1.3s ease-in-out infinite;}
+@keyframes nGlow{0%,100%{box-shadow:0 0 10px rgba(248,113,113,.2)}50%{box-shadow:0 0 28px rgba(248,113,113,.5)}}
+.ntitle{font-size:13px;font-weight:bold;color:#fbbf24;letter-spacing:4px;display:block;margin-bottom:6px;}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:30px 28px;margin-bottom:20px;backdrop-filter:blur(20px);position:relative;overflow:hidden;animation:cRise .75s cubic-bezier(.23,1,.32,1) both;box-shadow:0 8px 40px rgba(0,0,0,.45),0 0 0 1px rgba(240,192,64,.03) inset;transition:border-color .3s,box-shadow .3s;}
+.card:hover{border-color:rgba(240,192,64,.28);box-shadow:0 14px 55px rgba(0,0,0,.5),0 0 60px rgba(147,51,234,.08);}
+@keyframes cRise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 5%,var(--gold3) 30%,var(--gold2) 50%,var(--gold3) 70%,transparent 95%);animation:tBeam 4s ease-in-out infinite;opacity:.4;}
+@keyframes tBeam{0%,100%{opacity:.3}50%{opacity:.9;box-shadow:0 2px 16px var(--gold)}}
+.card::after{content:'';position:absolute;bottom:0;right:0;width:64px;height:64px;border-bottom:1px solid rgba(240,192,64,.1);border-right:1px solid rgba(240,192,64,.1);border-radius:0 0 8px 0;}
+.cdiamond{position:absolute;top:-1px;right:30px;width:7px;height:7px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 9px var(--gold);opacity:.55;}
+.cd1{animation-delay:.08s;} .cd2{animation-delay:.2s;} .cd3{animation-delay:.32s;} .cd4{animation-delay:.44s;}
+
+.ctitle{font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:var(--gold2);letter-spacing:4px;margin-bottom:24px;display:flex;align-items:center;gap:12px;text-transform:uppercase;filter:drop-shadow(0 0 6px rgba(240,192,64,.28));}
+.ctitle::before{content:'◆';font-size:9px;color:var(--gold);filter:drop-shadow(0 0 6px var(--gold));animation:dSpin 8s linear infinite;}
+@keyframes dSpin{to{transform:rotate(360deg)}}
+.cbadge{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 9px;background:rgba(147,51,234,.18);border:1px solid rgba(192,132,252,.28);border-radius:20px;color:var(--pur3);letter-spacing:2px;margin-left:auto;}
+
+/* INPUTS */
+.igroup{margin-bottom:20px;}
+.ilabel{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--gold3);letter-spacing:3px;margin-bottom:8px;display:flex;align-items:center;gap:8px;text-transform:uppercase;opacity:.85;}
+.ilabel::before{content:'//';color:var(--pur3);opacity:.55;font-size:10px;}
+.iwrap{position:relative;}
+.iwrap::before{content:'◈';position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(240,192,64,.4);font-size:12px;pointer-events:none;z-index:1;}
+input[type="text"],select{width:100%;background:rgba(7,3,15,.9);border:1px solid rgba(240,192,64,.14);border-radius:5px;padding:13px 14px 13px 36px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;transition:all .3s;letter-spacing:1px;-webkit-appearance:none;}
+input::placeholder{color:rgba(112,96,160,.55);}
+input:focus,select:focus{border-color:rgba(240,192,64,.38);background:rgba(14,5,36,.96);box-shadow:0 0 0 3px rgba(147,51,234,.1),0 0 22px rgba(240,192,64,.08);}
+select{cursor:pointer;}select option{background:#0e0524;color:var(--text);}
+.fline{position:absolute;bottom:0;left:0;width:0%;height:1px;background:linear-gradient(90deg,var(--pur2),var(--gold),var(--pur3));border-radius:0 0 5px 5px;transition:width .4s ease;}
+input:focus~.fline,select:focus~.fline{width:100%;}
+
+/* BUTTON */
+.btn-send{width:100%;padding:16px;background:linear-gradient(135deg,rgba(147,51,234,.22),rgba(109,40,217,.18));border:1px solid rgba(240,192,64,.42);border-radius:6px;color:var(--gold2);font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:7px;cursor:pointer;position:relative;overflow:hidden;transition:all .3s;text-transform:uppercase;margin-top:10px;}
+.btn-send::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(240,192,64,.14),rgba(147,51,234,.14));opacity:0;transition:opacity .3s;}
+.btn-shine{position:absolute;top:0;left:-120%;width:48%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);transform:skewX(-20deg);transition:left .5s ease;}
+.btn-send:hover::before{opacity:1;}
+.btn-send:hover .btn-shine{left:135%;}
+.btn-send:hover{border-color:var(--gold2);color:#fff;box-shadow:0 0 32px rgba(240,192,64,.38),0 0 65px rgba(147,51,234,.22);}
+.btn-send:active{transform:scale(0.983);}
+.btn-send.loading{pointer-events:none;opacity:.6;}
+.btn-send.disabled-check{pointer-events:none;border-color:rgba(248,113,113,.38);color:rgba(248,113,113,.65);}
+.btxt{position:relative;z-index:1;}
+.lbar{position:absolute;bottom:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--pur2),var(--gold),var(--pur3));box-shadow:0 0 10px var(--gold);transition:width .3s;}
+
+/* ERROR */
+.errmsg{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.3);border-radius:5px;padding:12px 16px;margin-top:14px;color:#fca5a5;font-family:'JetBrains Mono',monospace;font-size:11px;display:none;letter-spacing:1px;}
+.errmsg.show{display:block;animation:eShake .4s ease;}
+@keyframes eShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* RESULT */
+.rpanel{background:rgba(7,3,15,.96);border:1px solid rgba(240,192,64,.2);border-radius:7px;margin-top:22px;display:none;overflow:hidden;animation:pIn .45s cubic-bezier(.23,1,.32,1);}
+.rpanel.show{display:block;}
+@keyframes pIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.rphdr{padding:10px 16px;background:linear-gradient(90deg,rgba(147,51,234,.14),rgba(240,192,64,.08),rgba(147,51,234,.14));border-bottom:1px solid rgba(240,192,64,.1);font-family:'Cinzel',serif;font-size:10px;color:var(--gold3);letter-spacing:4px;display:flex;align-items:center;gap:8px;}
+.rphdr::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:dPulse 1s ease-in-out infinite;}
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(240,192,64,.05);transition:background .2s;}
+.rrow:last-child{border-bottom:none;}
+.rrow:hover{background:rgba(240,192,64,.03);}
+.rkey{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:10px;letter-spacing:2px;}
+.rval{font-family:'Cinzel',serif;color:var(--gold2);font-size:12px;font-weight:700;}
+.rval.success{color:var(--green);text-shadow:0 0 10px var(--green);}
+.rval.big{font-size:22px;color:#fff;text-shadow:0 0 22px var(--gold);}
+.rpanel.success-anim{animation:pIn .45s ease,boom .7s ease .4s;}
+@keyframes boom{0%{box-shadow:0 0 0 0 rgba(74,222,128,.45)}100%{box-shadow:0 0 0 40px rgba(74,222,128,0)}}
+
+/* TOKEN */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:10px;margin-top:14px;}
+.titem{background:rgba(7,3,15,.8);border:1px solid rgba(240,192,64,.1);border-radius:6px;padding:10px 13px;font-family:'JetBrains Mono',monospace;font-size:11px;display:flex;align-items:center;gap:10px;transition:all .25s;position:relative;overflow:hidden;}
+.titem::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold);opacity:0;transition:opacity .25s;}
+.titem:hover{border-color:rgba(240,192,64,.28);background:rgba(14,5,36,.92);}
+.titem:hover::before{opacity:.5;}
+.tdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.tdot.active{background:var(--green);box-shadow:0 0 6px var(--green);}
+.tdot.checking{background:#fbbf24;box-shadow:0 0 6px #fbbf24;animation:dPulse .6s ease-in-out infinite;}
+.tuid{color:var(--gold2);font-size:11px;display:block;}
+.tinfo{color:var(--muted);font-size:10px;display:block;margin-top:2px;}
+.reftimer{display:flex;align-items:center;gap:14px;background:rgba(7,3,15,.7);border:1px solid rgba(240,192,64,.1);border-radius:6px;padding:12px 15px;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;}
+.tval{color:var(--gold2);font-weight:bold;font-size:15px;min-width:76px;filter:drop-shadow(0 0 5px rgba(240,192,64,.4));}
+.rbar{flex:1;height:3px;background:rgba(240,192,64,.07);border-radius:2px;overflow:hidden;}
+.rfill{height:100%;background:linear-gradient(90deg,var(--pur2),var(--gold),var(--pur3));border-radius:2px;box-shadow:0 0 8px var(--gold);transition:width 1s linear;}
+
+/* LOGS */
+.loghdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.livebadge{font-family:'JetBrains Mono',monospace;font-size:9px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.25);color:var(--green);padding:3px 10px;border-radius:20px;letter-spacing:2px;display:flex;align-items:center;gap:6px;}
+.livedot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:dPulse .9s ease-in-out infinite;}
+.logbox{background:rgba(4,2,10,.96);border:1px solid rgba(240,192,64,.08);border-radius:6px;padding:12px 14px;height:240px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.75;scroll-behavior:smooth;}
+.logbox::-webkit-scrollbar{width:4px;}
+.logbox::-webkit-scrollbar-track{background:rgba(0,0,0,.3);}
+.logbox::-webkit-scrollbar-thumb{background:rgba(240,192,64,.2);border-radius:2px;}
+.log-line{display:block;padding:1px 0;border-bottom:1px solid rgba(240,192,64,.03);color:var(--muted);}
+.log-line.ok{color:var(--green);}
+.log-line.err{color:var(--red);}
+.log-line.warn{color:#fbbf24;}
+.log-line.sys{color:var(--pur3);}
+.log-line.check{color:#fbbf24;font-weight:bold;}
+.logclrbtn{font-family:'JetBrains Mono',monospace;font-size:10px;background:transparent;border:1px solid rgba(240,192,64,.18);color:var(--muted);padding:4px 10px;border-radius:4px;cursor:pointer;letter-spacing:1px;transition:all .2s;}
+.logclrbtn:hover{border-color:var(--gold);color:var(--gold2);}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:8px;margin-top:6px;}
+.step{display:flex;align-items:flex-start;gap:16px;padding:13px 16px;background:rgba(7,3,15,.6);border-left:2px solid rgba(240,192,64,.2);border-radius:0 6px 6px 0;font-size:14.5px;color:var(--muted);transition:all .25s;position:relative;overflow:hidden;}
+.step::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(240,192,64,.05),transparent);opacity:0;transition:opacity .25s;}
+.step:hover{border-left-color:var(--gold2);color:var(--text);}
+.step:hover::before{opacity:1;}
+.snum{font-family:'Cinzel',serif;color:var(--gold3);font-size:13px;font-weight:700;min-width:24px;filter:drop-shadow(0 0 4px rgba(240,192,64,.28));}
+
+/* SERVERS */
+.svgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px;margin-top:12px;}
+.svb{padding:10px 6px;text-align:center;background:rgba(7,3,15,.7);border:1px solid rgba(240,192,64,.12);border-radius:6px;font-family:'Cinzel',serif;font-size:11px;color:rgba(240,192,64,.7);letter-spacing:1px;transition:all .2s;cursor:default;}
+.svb:hover{background:rgba(147,51,234,.15);border-color:var(--gold);color:var(--gold2);box-shadow:0 0 16px rgba(240,192,64,.2);}
+
+/* FOOTER */
+footer{text-align:center;padding:30px 20px 20px;position:relative;z-index:2;}
+.fline{height:1px;margin-bottom:16px;background:linear-gradient(90deg,transparent,var(--gold3),rgba(255,255,255,.2),var(--gold3),transparent);opacity:.5;}
+.ftxt{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:3px;}
+.ftxt span{color:var(--gold3);animation:fP 3s ease-in-out infinite;}
+@keyframes fP{0%,100%{color:var(--gold3)}50%{color:var(--gold);text-shadow:0 0 8px var(--gold)}}
+
+@media(max-width:600px){.card{padding:18px 14px;}.tgrid{grid-template-columns:1fr 1fr;}.svgrid{grid-template-columns:repeat(3,1fr);}}
+</style>
+</head>
+<body>
+
+<div id="cur"></div><div id="cur-ring"></div>
+<div id="bg-mesh"></div><div id="bg-grid"></div><div id="bg-stars"></div><div id="vignette"></div>
+
+<div class="wrap">
+
+<!-- HEADER -->
+<header>
+  <div class="hd-top-bar"></div>
+  <div class="hd-corner tl"></div><div class="hd-corner tr"></div>
+  <div class="hd-corner bl"></div><div class="hd-corner br"></div>
+  <div class="logo-eyebrow">Free Fire · Like Sender System</div>
+  <div class="logo">CSR YEAMIN</div>
+  <div class="logo-sub">LIKE WEB</div>
+  <div class="divider"></div>
+  <div class="tagline">// crafted by csr yeamin // automated like system //</div>
+</header>
+
+<!-- STATUS ROW -->
+<div class="srow">
+  <div class="si"><div class="sdot g" id="sysDot"></div><span id="sysStatus">SYSTEM ONLINE</span></div>
+  <div class="si"><div class="sdot p" id="tokenDot"></div><span id="tokenCountStatus">LOADING TOKENS...</span></div>
+  <div class="si"><div class="sdot y"></div><span>AUTO REFRESH · 2H</span></div>
+  <a href="/terminal" target="_blank" class="tbtn">⚡ TERMINAL</a>
+</div>
+
+<!-- NOTICE -->
+<div class="notice" id="checkingNotice">
+  <span class="ntitle">⚠ TOKEN VERIFICATION IN PROGRESS</span>
+  Like service is temporarily paused while tokens are being validated. Please wait...
+</div>
+
+<!-- SEND LIKES CARD -->
+<div class="card cd1">
+  <div class="cdiamond"></div>
+  <div class="ctitle">Send Likes <span class="cbadge">API v2</span></div>
+
+  <div class="igroup">
+    <label class="ilabel">Player UID</label>
+    <div class="iwrap">
+      <input type="text" id="uidInput" placeholder="Enter your Free Fire UID..." />
+      <div class="fline"></div>
+    </div>
+  </div>
+
+  <div class="igroup">
+    <label class="ilabel">Server Region</label>
+    <div class="iwrap">
+      <select id="serverSelect">
+        <option value="">— Select Server Region —</option>
+        <option value="BD">🇧🇩  BD — Bangladesh</option>
+        <option value="IND">🇮🇳  IND — India</option>
+        <option value="BR">🇧🇷  BR — Brazil</option>
+        <option value="US">🇺🇸  US — United States</option>
+        <option value="SAC">🌎  SAC — South America</option>
+        <option value="NA">🌎  NA — North America</option>
+        <option value="SG">🇸🇬  SG — Singapore</option>
+        <option value="TH">🇹🇭  TH — Thailand</option>
+        <option value="VN">🇻🇳  VN — Vietnam</option>
+        <option value="ID">🇮🇩  ID — Indonesia</option>
+        <option value="TW">🇹🇼  TW — Taiwan</option>
+        <option value="RU">🇷🇺  RU — Russia</option>
+        <option value="CIS">🌍  CIS — CIS Region</option>
+        <option value="MENA">🌍  MENA — Middle East</option>
+        <option value="PK">🇵🇰  PK — Pakistan</option>
+      </select>
+      <div class="fline"></div>
+    </div>
+  </div>
+
+  <button class="btn-send" id="sendBtn" onclick="sendLikes()">
+    <div class="btn-shine"></div>
+    <span class="btxt">✦ SEND LIKES ✦</span>
+    <div class="lbar" id="loadingBar"></div>
+  </button>
+
+  <div class="errmsg" id="errorMsg"></div>
+
+  <div class="rpanel" id="resultPanel">
+    <div class="rphdr">OPERATION RESULT</div>
+    <div class="rrow"><span class="rkey">PLAYER NAME</span><span class="rval" id="rName">—</span></div>
+    <div class="rrow"><span class="rkey">PLAYER UID</span><span class="rval" id="rUID">—</span></div>
+    <div class="rrow"><span class="rkey">LIKES BEFORE</span><span class="rval" id="rBefore">—</span></div>
+    <div class="rrow"><span class="rkey">LIKES AFTER</span><span class="rval big" id="rAfter">—</span></div>
+    <div class="rrow"><span class="rkey">LIKES GIVEN</span><span class="rval success" id="rGiven">—</span></div>
+    <div class="rrow"><span class="rkey">STATUS</span><span class="rval success" id="rStatus">—</span></div>
+  </div>
+</div>
+
+<!-- TOKEN STATUS -->
+<div class="card cd2">
+  <div class="cdiamond"></div>
+  <div class="ctitle">Token Status</div>
+  <div class="reftimer">
+    <span>⏱</span><span>NEXT REFRESH</span>
+    <span class="tval" id="timerVal">--:--:--</span>
+    <div class="rbar"><div class="rfill" id="refreshFill" style="width:100%"></div></div>
+  </div>
+  <div class="tgrid" id="tokenGrid">
+    <div class="titem"><div class="tdot active"></div><div><span class="tuid">Initializing...</span></div></div>
+  </div>
+</div>
+
+<!-- LIVE LOGS -->
+<div class="card cd3">
+  <div class="cdiamond"></div>
+  <div class="loghdr">
+    <div class="ctitle" style="margin-bottom:0">Live Token Logs</div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <div class="livebadge"><div class="livedot"></div>LIVE</div>
+      <button class="logclrbtn" onclick="clearLogs()">CLEAR</button>
+    </div>
+  </div>
+  <div class="logbox" id="logBox">
+    <span class="log-line sys">[SYSTEM] Connecting to log stream...</span>
+  </div>
+</div>
+
+<!-- HOW TO USE -->
+<div class="card cd4">
+  <div class="cdiamond"></div>
+  <div class="ctitle">How To Use</div>
+  <div class="steps">
+    <div class="step"><span class="snum">I</span><span>Enter the target player's Free Fire <strong style="color:var(--gold2)">UID</strong> in the input field above.</span></div>
+    <div class="step"><span class="snum">II</span><span>Select the correct <strong style="color:var(--gold2)">Server Region</strong> from the dropdown menu.</span></div>
+    <div class="step"><span class="snum">III</span><span>Click <strong style="color:#fff">SEND LIKES</strong> and wait for the system to process the API requests.</span></div>
+    <div class="step"><span class="snum">IV</span><span>Tokens are stored in <strong style="color:var(--gold2)">server memory only</strong> — never written to files. 100% secure.</span></div>
+    <div class="step"><span class="snum">V</span><span>Tokens <strong style="color:var(--gold2)">auto-refresh every 2 hours</strong>. Service pauses briefly during validation.</span></div>
+  </div>
+  <div style="margin-top:24px">
+    <div class="ctitle" style="font-size:11px;margin-bottom:12px">Supported Servers</div>
+    <div class="svgrid">
+      <div class="svb">BD</div><div class="svb">IND</div><div class="svb">BR</div>
+      <div class="svb">US</div><div class="svb">SAC</div><div class="svb">NA</div>
+      <div class="svb">SG</div><div class="svb">TH</div><div class="svb">VN</div>
+      <div class="svb">ID</div><div class="svb">TW</div><div class="svb">RU</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- .wrap -->
+
+<footer>
+  <div class="fline"></div>
+  <div class="ftxt">CSR YEAMIN LIKE WEB © 2025 — BUILT BY <span>CSR YEAMIN</span> — ALL RIGHTS RESERVED</div>
+</footer>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function aR(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(aR);})();
+
+// STARS
+const sE=document.getElementById('bg-stars');
+for(let i=0;i<90;i++){
+  const s=document.createElement('div');s.className='star';
+  const sz=.4+Math.random()*1.8;
+  const cc=['#f0c040','#c084fc','#ffffff','#ffd97a','#a78bfa'];
+  const c=cc[Math.floor(Math.random()*cc.length)];
+  s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${c};box-shadow:0 0 ${sz*4}px ${c};animation-duration:${2+Math.random()*6}s;animation-delay:${Math.random()*7}s;`;
+  sE.appendChild(s);
+}
+
+// CARD HOVER
+document.querySelectorAll('.card').forEach(c=>{
+  c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();const x=((e.clientX-r.left)/r.width)*100;const y=((e.clientY-r.top)/r.height)*100;c.style.background=`radial-gradient(circle at ${x}% ${y}%, rgba(55,10,100,.55), rgba(14,5,36,.93))`;});
+  c.addEventListener('mouseleave',()=>{c.style.background='';});
+});
+
+// LOGS
+const logBox=document.getElementById('logBox');let logCount=0,lastLogId=0;
+function clLog(m){if(m.includes('CHECKING TOKEN'))return'check';if(m.includes('[SYSTEM]'))return'sys';if(m.includes(' OK')||m.includes('DONE')||m.includes('valid')||m.includes('✓'))return'ok';if(m.includes('[ERROR]')||m.includes('FAILED')||m.includes('expired')||m.includes('✗'))return'err';if(m.includes('[WARN]')||m.includes('[FAIL]'))return'warn';return'';}
+function appendLog(m){if(!m||m.trim()==='')return;const s=document.createElement('span');s.className='log-line '+clLog(m);s.textContent=m;logBox.appendChild(s);logCount++;if(logCount>300){logBox.querySelectorAll('.log-line').forEach((l,i)=>{if(i<logCount-300)l.remove();});logCount=300;}logBox.scrollTop=logBox.scrollHeight;}
+function clearLogs(){logBox.innerHTML='';logCount=0;appendLog('[SYSTEM] Log cleared.');}
+async function pollLogs(){try{const r=await fetch(`/logs/poll?after=${lastLogId}`);const d=await r.json();if(d.lines&&d.lines.length>0){d.lines.forEach(l=>appendLog(l.msg));lastLogId=d.last_id;}}catch(e){}}
+appendLog('[SYSTEM] Connecting to log server...');pollLogs();setInterval(pollLogs,3000);
+
+// TOKEN STATUS
+let _nTs=0,_tot=7200,_chk=false;
+function fetchTS(){
+  fetch('/token_status').then(r=>r.json()).then(d=>{
+    const cnt=d.total_tokens||0;_chk=d.checking_mode||false;_nTs=d.next_refresh_ts||0;
+    document.getElementById('tokenCountStatus').textContent=_chk?'⚠ CHECKING TOKEN...':cnt+' TOKENS ACTIVE';
+    document.getElementById('tokenDot').className='sdot '+(_chk?'r':'p');
+    const n=document.getElementById('checkingNotice');_chk?n.classList.add('show'):n.classList.remove('show');
+    const btn=document.getElementById('sendBtn');
+    if(_chk){btn.classList.add('disabled-check');btn.querySelector('.btxt').textContent='⏳ CHECKING TOKEN...';}
+    else if(!btn.classList.contains('loading')){btn.classList.remove('disabled-check');btn.querySelector('.btxt').textContent='✦ SEND LIKES ✦';}
+    const g=document.getElementById('tokenGrid');g.innerHTML='';
+    if(d.tokens&&d.tokens.length>0){d.tokens.forEach(t=>{const item=document.createElement('div');item.className='titem';item.innerHTML=`<div class="tdot ${_chk?'checking':'active'}"></div><div><span class="tuid">${t.uid}</span><span class="tinfo">${t.region} · ${_chk?'CHECKING':'ACTIVE'}</span></div>`;g.appendChild(item);});}
+    else{g.innerHTML='<div class="titem"><div class="tdot active"></div><div><span class="tuid">Generating...</span></div></div>';}
+  }).catch(()=>{document.getElementById('tokenCountStatus').textContent='SERVER OFFLINE';});
+}
+fetchTS();setInterval(fetchTS,10000);
+
+// TIMER
+function updTimer(){const now=Math.floor(Date.now()/1000);if(_nTs<=0){document.getElementById('timerVal').textContent='--:--:--';document.getElementById('refreshFill').style.width='0%';return;}let r=Math.max(0,_nTs-now);document.getElementById('timerVal').textContent=String(Math.floor(r/3600)).padStart(2,'0')+':'+String(Math.floor((r%3600)/60)).padStart(2,'0')+':'+String(r%60).padStart(2,'0');document.getElementById('refreshFill').style.width=(Math.min(100,r/_tot*100))+'%';}
+setInterval(updTimer,1000);
+
+// SEND
+async function sendLikes(){
+  if(_chk){showError('⏳ Token verification in progress. Please wait.');return;}
+  const uid=document.getElementById('uidInput').value.trim();
+  const srv=document.getElementById('serverSelect').value;
+  const btn=document.getElementById('sendBtn');
+  document.getElementById('errorMsg').classList.remove('show');
+  document.getElementById('resultPanel').classList.remove('show');
+  if(!uid){showError('❌ Please enter a Player UID.');return;}
+  if(!srv){showError('❌ Please select a Server Region.');return;}
+  if(!/^\d+$/.test(uid)){showError('❌ UID must contain numbers only.');return;}
+  btn.classList.add('loading');btn.querySelector('.btxt').textContent='⏳ PROCESSING...';
+  let w=0;const bar=document.getElementById('loadingBar');
+  const iv=setInterval(()=>{w+=Math.random()*12;if(w>90){clearInterval(iv);w=92;}bar.style.width=w+'%';},280);
+  try{
+    const resp=await fetch(`/like?uid=${encodeURIComponent(uid)}&server_name=${encodeURIComponent(srv)}`);
+    const data=await resp.json();
+    if(resp.status===503||data.error)showError('⚠️ '+(data.error||'Server error. Try again.'));
+    else showResult(data);
+  }catch(e){showError('🔌 Cannot connect to server.');}
+  finally{clearInterval(iv);btn.classList.remove('loading');btn.querySelector('.btxt').textContent='✦ SEND LIKES ✦';bar.style.width='0%';}
+}
+function showError(m){const e=document.getElementById('errorMsg');e.textContent=m;e.classList.add('show');}
+function showResult(data){
+  document.getElementById('rName').textContent=data.PlayerNickname||'—';
+  document.getElementById('rUID').textContent=data.UID||'—';
+  document.getElementById('rBefore').textContent=(data.LikesbeforeCommand??'—').toLocaleString();
+  document.getElementById('rAfter').textContent=(data.LikesafterCommand??'—').toLocaleString();
+  document.getElementById('rGiven').textContent='+'+(data.LikesGivenByAPI??'0');
+  document.getElementById('rStatus').textContent=data.status===1?'✅ LIKES SENT SUCCESSFULLY':'⚠️ ALREADY LIKED / MAX REACHED';
+  const p=document.getElementById('resultPanel');p.classList.add('show','success-anim');setTimeout(()=>p.classList.remove('success-anim'),1200);
+}
+document.getElementById('uidInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendLikes();});
+</script>
+</body>
+</html>
