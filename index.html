@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSR YEAMIN LIKE WEB</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-glow: #00d4ff;
+    --blue-deep: #0066ff;
+    --blue-electric: #00f0ff;
+    --blue-neon: #00bfff;
+    --dark-bg: #010a18;
+    --card-bg: rgba(0, 15, 40, 0.85);
+    --border-glow: rgba(0, 212, 255, 0.4);
+    --text-primary: #e0f7ff;
+    --text-secondary: #7ab8cc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark-bg);
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--blue-glow);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px var(--blue-glow), 0 0 20px var(--blue-glow);
+    transition: transform 0.1s ease;
+  }
+  .cursor-trail {
+    width: 30px; height: 30px;
+    border: 1px solid rgba(0,212,255,0.5);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.2s ease;
+  }
+
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 50px 50px; }
+  }
+
+  .bg-particles { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--blue-glow);
+    border-radius: 50%;
+    animation: float linear infinite;
+    box-shadow: 0 0 6px var(--blue-glow);
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) translateX(var(--drift)); opacity: 0; }
+  }
+
+  .scanlines {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px
+    );
+  }
+
+  .container { position: relative; z-index: 2; max-width: 900px; margin: 0 auto; padding: 20px; }
+
+  header {
+    text-align: center;
+    padding: 40px 20px 30px;
+    position: relative;
+  }
+
+  .logo-container { position: relative; display: inline-block; margin-bottom: 8px; }
+  .logo-text {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(22px, 5vw, 42px);
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, #ffffff 0%, var(--blue-electric) 50%, var(--blue-deep) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 15px var(--blue-glow));
+    animation: logoPulse 3s ease-in-out infinite, glitch 8s ease-in-out infinite;
+  }
+  @keyframes logoPulse {
+    0%, 100% { filter: drop-shadow(0 0 15px var(--blue-glow)); }
+    50% { filter: drop-shadow(0 0 30px var(--blue-electric)) drop-shadow(0 0 60px var(--blue-deep)); }
+  }
+  @keyframes glitch {
+    0%, 90%, 100% { transform: translate(0); }
+    92% { transform: translate(-2px, 1px); }
+    94% { transform: translate(2px, -1px); }
+    96% { transform: translate(-1px, 2px); }
+  }
+
+  .logo-underline {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--blue-glow), var(--blue-electric), var(--blue-glow), transparent);
+    margin: 8px auto;
+    animation: lineGlow 2s ease-in-out infinite;
+  }
+  @keyframes lineGlow {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; box-shadow: 0 0 10px var(--blue-glow); }
+  }
+
+  .tagline {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--blue-neon);
+    font-size: 12px;
+    letter-spacing: 3px;
+    opacity: 0.8;
+    text-transform: uppercase;
+  }
+
+  .corner-dec {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-color: var(--blue-glow);
+    border-style: solid;
+    opacity: 0.7;
+  }
+  .corner-dec.tl { top: 10px; left: 10px; border-width: 2px 0 0 2px; }
+  .corner-dec.tr { top: 10px; right: 10px; border-width: 2px 2px 0 0; }
+  .corner-dec.bl { bottom: 0; left: 10px; border-width: 0 0 2px 2px; }
+  .corner-dec.br { bottom: 0; right: 10px; border-width: 0 2px 2px 0; }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    padding: 10px;
+  }
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+  }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #00ff88;
+    box-shadow: 0 0 6px #00ff88;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  .status-dot.yellow { background: #ffdd00; box-shadow: 0 0 6px #ffdd00; }
+  .status-dot.red    { background: #ff4444; box-shadow: 0 0 6px #ff4444; }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── CHECKING NOTICE ── */
+  .checking-notice {
+    display: none;
+    background: rgba(255, 170, 0, 0.1);
+    border: 1px solid rgba(255, 170, 0, 0.6);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: #ffaa00;
+    letter-spacing: 1px;
+    text-align: center;
+    animation: noticeFlash 1s ease-in-out infinite;
+    position: relative;
+    z-index: 10;
+  }
+  .checking-notice.show { display: block; }
+  @keyframes noticeFlash {
+    0%, 100% { box-shadow: 0 0 10px rgba(255,170,0,0.3); }
+    50%       { box-shadow: 0 0 25px rgba(255,170,0,0.6); }
+  }
+  .checking-notice .notice-icon { font-size: 20px; display: block; margin-bottom: 6px; }
+  .checking-notice .notice-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffcc00;
+    letter-spacing: 3px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-glow);
+    border-radius: 4px;
+    padding: 30px;
+    position: relative;
+    backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+    animation: cardIn 0.6s ease forwards;
+    box-shadow: 0 0 20px rgba(0,100,255,0.1), inset 0 0 30px rgba(0,20,60,0.5);
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 20px; right: 20px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue-glow), transparent);
+    animation: scanTop 3s ease-in-out infinite;
+  }
+  @keyframes scanTop {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; box-shadow: 0 0 8px var(--blue-glow); }
+  }
+
+  .card-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    color: var(--blue-glow);
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px; height: 14px;
+    background: var(--blue-glow);
+    box-shadow: 0 0 8px var(--blue-glow);
+  }
+
+  /* ── INPUTS ── */
+  .input-group { margin-bottom: 18px; }
+  .input-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--blue-neon);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    display: block;
+    text-transform: uppercase;
+  }
+  .input-wrapper { position: relative; }
+  .input-wrapper::before {
+    content: '▶';
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--blue-glow);
+    font-size: 10px;
+    opacity: 0.7;
+  }
+  input[type="text"], select {
+    width: 100%;
+    background: rgba(0, 20, 50, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    border-radius: 3px;
+    padding: 12px 14px 12px 30px;
+    color: var(--text-primary);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+  }
+  input[type="text"]:focus, select:focus {
+    border-color: var(--blue-glow);
+    box-shadow: 0 0 15px rgba(0,212,255,0.2), inset 0 0 10px rgba(0,212,255,0.05);
+    background: rgba(0, 30, 70, 0.9);
+  }
+  select option { background: #010a18; }
+
+  /* ── BUTTON ── */
+  .btn-send {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid var(--blue-glow);
+    border-radius: 3px;
+    color: var(--blue-electric);
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+  .btn-send::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,100,255,0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .btn-send::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: -100%;
+    width: 60px; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateY(-50%) skewX(-20deg);
+    transition: left 0.5s ease;
+  }
+  .btn-send:hover::before { opacity: 1; }
+  .btn-send:hover::after  { left: 120%; }
+  .btn-send:hover {
+    box-shadow: 0 0 20px rgba(0,212,255,0.4), 0 0 40px rgba(0,100,255,0.2);
+    color: #ffffff;
+  }
+  .btn-send:active { transform: scale(0.98); }
+  .btn-send.loading { pointer-events: none; opacity: 0.7; }
+  .btn-send.disabled-check {
+    pointer-events: none;
+    border-color: rgba(255,170,0,0.5);
+    color: rgba(255,170,0,0.7);
+    opacity: 0.6;
+  }
+
+  .loading-bar {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue-deep), var(--blue-electric));
+    width: 0%;
+    border-radius: 0 0 3px 3px;
+    box-shadow: 0 0 8px var(--blue-glow);
+    transition: width 0.3s ease;
+  }
+
+  /* ── RESULT ── */
+  .result-panel {
+    background: rgba(0, 10, 30, 0.9);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 3px;
+    padding: 20px;
+    margin-top: 20px;
+    display: none;
+    animation: resultIn 0.4s ease;
+  }
+  @keyframes resultIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .result-panel.show { display: block; }
+
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(0,212,255,0.08);
+    font-size: 14px;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-key { font-family: 'Share Tech Mono', monospace; color: var(--text-secondary); font-size: 11px; letter-spacing: 1px; }
+  .result-val { font-family: 'Orbitron', monospace; color: var(--blue-electric); font-size: 13px; font-weight: 700; }
+  .result-val.success { color: #00ff88; text-shadow: 0 0 8px #00ff88; }
+  .result-val.big    { font-size: 20px; color: #ffffff; text-shadow: 0 0 15px var(--blue-glow); }
+
+  @keyframes successBurst {
+    0%   { box-shadow: 0 0 0 0 rgba(0,255,136,0.4); }
+    100% { box-shadow: 0 0 0 30px rgba(0,255,136,0); }
+  }
+  .result-panel.success-anim { animation: resultIn 0.4s ease, successBurst 0.8s ease 0.4s; }
+
+  .error-msg {
+    background: rgba(255, 30, 60, 0.1);
+    border: 1px solid rgba(255,50,80,0.4);
+    border-radius: 3px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    color: #ff4d6d;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    display: none;
+    letter-spacing: 1px;
+  }
+  .error-msg.show { display: block; }
+
+  /* ── TOKEN STATUS ── */
+  .token-status-card { animation-delay: 0.2s; opacity: 0; animation: cardIn 0.6s ease 0.2s forwards; }
+
+  .token-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .token-item {
+    background: rgba(0, 212, 255, 0.04);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 3px;
+    padding: 10px 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+  }
+  .token-item:hover { border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.08); }
+  .token-dot { width: 6px; height: 6px; border-radius: 50%; background: #00ff88; box-shadow: 0 0 5px #00ff88; flex-shrink: 0; }
+  .token-dot.checking { background: #ffaa00; box-shadow: 0 0 5px #ffaa00; }
+  .token-info { color: var(--text-secondary); }
+  .token-uid  { color: var(--blue-neon); }
+
+  .refresh-timer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0,212,255,0.05);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 3px;
+    padding: 10px 14px;
+    margin-top: 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+  }
+  .timer-val { color: var(--blue-electric); font-weight: bold; font-size: 13px; min-width: 70px; }
+  .refresh-progress { flex: 1; height: 3px; background: rgba(0,212,255,0.1); border-radius: 2px; overflow: hidden; }
+  .refresh-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue-deep), var(--blue-electric));
+    border-radius: 2px;
+    box-shadow: 0 0 6px var(--blue-glow);
+    transition: width 1s linear;
+  }
+
+  /* ── LIVE LOG PANEL ── */
+  .log-card { animation-delay: 0.3s; opacity: 0; animation: cardIn 0.6s ease 0.3s forwards; }
+  .log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .log-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    background: rgba(0,255,136,0.1);
+    border: 1px solid rgba(0,255,136,0.3);
+    color: #00ff88;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .log-badge .live-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #00ff88;
+    animation: blink 0.8s ease-in-out infinite;
+  }
+  .log-box {
+    background: rgba(0, 5, 15, 0.9);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 3px;
+    padding: 12px;
+    height: 280px;
+    overflow-y: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #7ab8cc;
+    scroll-behavior: smooth;
+  }
+  .log-box::-webkit-scrollbar { width: 4px; }
+  .log-box::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+  .log-box::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.3); border-radius: 2px; }
+
+  .log-line { display: block; padding: 1px 0; border-bottom: 1px solid rgba(0,212,255,0.04); }
+  .log-line.ok     { color: #00ff88; }
+  .log-line.err    { color: #ff4d6d; }
+  .log-line.warn   { color: #ffaa00; }
+  .log-line.sys    { color: var(--blue-electric); }
+  .log-line.ping   { color: rgba(0,212,255,0.25); }
+  .log-line.check  { color: #ffaa00; font-weight: bold; }
+
+  .log-clear-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    background: transparent;
+    border: 1px solid rgba(0,212,255,0.2);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .log-clear-btn:hover { border-color: var(--blue-glow); color: var(--blue-electric); }
+
+  /* ── HOW TO USE ── */
+  .how-card { animation-delay: 0.4s; opacity: 0; animation: cardIn 0.6s ease 0.4s forwards; }
+  .steps { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .step {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 12px;
+    background: rgba(0,212,255,0.03);
+    border-left: 2px solid rgba(0,212,255,0.3);
+    border-radius: 0 3px 3px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+  }
+  .step:hover { border-left-color: var(--blue-glow); background: rgba(0,212,255,0.07); color: var(--text-primary); }
+  .step-num { font-family: 'Orbitron', monospace; color: var(--blue-glow); font-size: 11px; font-weight: 700; min-width: 20px; padding-top: 1px; }
+
+  .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-top: 10px; }
+  .server-badge {
+    padding: 8px 6px; text-align: center;
+    background: rgba(0,212,255,0.05);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 3px;
+    font-family: 'Orbitron', monospace;
+    font-size: 11px; color: var(--blue-neon); letter-spacing: 1px;
+    transition: all 0.2s ease; cursor: default;
+  }
+  .server-badge:hover { background: rgba(0,212,255,0.12); border-color: var(--blue-glow); box-shadow: 0 0 10px rgba(0,212,255,0.2); }
+
+  footer { text-align: center; padding: 30px 20px 20px; position: relative; z-index: 2; }
+  .footer-line { height: 1px; background: linear-gradient(90deg, transparent, rgba(0,212,255,0.3), transparent); margin-bottom: 16px; }
+  .footer-text { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: rgba(0,212,255,0.4); letter-spacing: 2px; }
+  .footer-text span { color: var(--blue-neon); animation: colorCycle 3s ease-in-out infinite; }
+  @keyframes colorCycle {
+    0%, 100% { color: var(--blue-neon); }
+    50% { color: var(--blue-electric); text-shadow: 0 0 8px var(--blue-electric); }
+  }
+
+  @media (max-width: 600px) {
+    .card { padding: 20px 16px; }
+    .token-grid { grid-template-columns: 1fr 1fr; }
+    .server-grid { grid-template-columns: repeat(3, 1fr); }
+    .status-bar { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+<div class="bg-grid"></div>
+<div class="bg-particles" id="particles"></div>
+<div class="scanlines"></div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="corner-dec tl"></div>
+    <div class="corner-dec tr"></div>
+    <div class="corner-dec bl"></div>
+    <div class="corner-dec br"></div>
+    <div class="logo-container">
+      <div class="logo-text">CSR YEAMIN LIKE WEB</div>
+      <div class="logo-underline"></div>
+    </div>
+    <div class="tagline">// FREE FIRE LIKE SENDER WEBSITE BY CSR YEAMIN //</div>
+  </header>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="status-dot" id="systemDot"></div>
+      <span id="systemStatus">SYSTEM ONLINE</span>
+    </div>
+    <div class="status-item">
+      <div class="status-dot" id="tokenDot"></div>
+      <span id="tokenCountStatus">LOADING TOKENS...</span>
+    </div>
+    <div class="status-item">
+      <div class="status-dot yellow"></div>
+      <span>AUTO REFRESH: 2H</span>
+    </div>
+    <div class="status-item">
+      <a href="/terminal" target="_blank" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#00ff88;border:1px solid rgba(0,255,136,0.3);padding:4px 12px;border-radius:3px;text-decoration:none;letter-spacing:2px;background:rgba(0,255,136,0.05);">⚡ TERMINAL</a>
+    </div>
+  </div>
+
+  <!-- CHECKING TOKEN NOTICE -->
+  <div class="checking-notice" id="checkingNotice">
+    <span class="notice-icon">⚠️</span>
+    <span class="notice-title">CHECKING TOKEN</span>
+    Token verification in progress — Like service is temporarily paused.<br>
+    Please wait while tokens are being validated...
+  </div>
+
+  <!-- MAIN SEND CARD -->
+  <div class="card">
+    <div class="card-title">SEND LIKES</div>
+
+    <div class="input-group">
+      <label class="input-label">PLAYER UID</label>
+      <div class="input-wrapper">
+        <input type="text" id="uidInput" placeholder="Enter Free Fire UID..." />
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">SERVER REGION</label>
+      <div class="input-wrapper">
+        <select id="serverSelect">
+          <option value="">-- SELECT SERVER --</option>
+          <option value="BD">BD — Bangladesh</option>
+          <option value="IND">IND — India</option>
+          <option value="BR">BR — Brazil</option>
+          <option value="US">US — United States</option>
+          <option value="SAC">SAC — South America</option>
+          <option value="NA">NA — North America</option>
+          <option value="SG">SG — Singapore</option>
+          <option value="TH">TH — Thailand</option>
+          <option value="VN">VN — Vietnam</option>
+          <option value="ID">ID — Indonesia</option>
+          <option value="TW">TW — Taiwan</option>
+          <option value="RU">RU — Russia</option>
+          <option value="CIS">CIS — CIS Region</option>
+          <option value="MENA">MENA — Middle East</option>
+          <option value="PK">PK — Pakistan</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-send" id="sendBtn" onclick="sendLikes()">
+      ⚡ SEND LIKES
+      <div class="loading-bar" id="loadingBar"></div>
+    </button>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="result-panel" id="resultPanel">
+      <div class="result-row">
+        <span class="result-key">PLAYER NAME</span>
+        <span class="result-val" id="rName">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">PLAYER UID</span>
+        <span class="result-val" id="rUID">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">LIKES BEFORE</span>
+        <span class="result-val" id="rBefore">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">LIKES AFTER</span>
+        <span class="result-val big" id="rAfter">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">LIKES GIVEN BY API</span>
+        <span class="result-val success" id="rGiven">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">STATUS</span>
+        <span class="result-val success" id="rStatus">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOKEN STATUS CARD -->
+  <div class="card token-status-card">
+    <div class="card-title">TOKEN STATUS</div>
+
+    <div class="refresh-timer">
+      <span>NEXT REFRESH IN:</span>
+      <span class="timer-val" id="timerVal">--:--:--</span>
+      <div class="refresh-progress">
+        <div class="refresh-fill" id="refreshFill" style="width:100%"></div>
+      </div>
+    </div>
+
+    <div class="token-grid" id="tokenGrid">
+      <div class="token-item">
+        <div class="token-dot"></div>
+        <span class="token-info">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE LOG CARD -->
+  <div class="card log-card">
+    <div class="log-header">
+      <div class="card-title" style="margin-bottom:0">LIVE TOKEN LOGS</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="log-badge">
+          <div class="live-dot"></div>
+          LIVE
+        </div>
+        <button class="log-clear-btn" onclick="clearLogs()">CLEAR</button>
+      </div>
+    </div>
+    <div class="log-box" id="logBox">
+      <span class="log-line sys">[SYSTEM] Connecting to log stream...</span>
+    </div>
+  </div>
+
+  <!-- HOW TO USE -->
+  <div class="card how-card">
+    <div class="card-title">HOW TO USE</div>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <span>Enter the target player's Free Fire <strong style="color:var(--blue-neon)">UID</strong> in the input field above.</span>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <span>Select the player's <strong style="color:var(--blue-neon)">Server Region</strong> from the dropdown list.</span>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <span>Click <strong style="color:var(--blue-electric)">SEND LIKES</strong> and wait for the system to process all requests.</span>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <span>Tokens are stored <strong style="color:var(--blue-neon)">in server memory</strong> — never saved to any file. Fully secure.</span>
+      </div>
+      <div class="step">
+        <span class="step-num">05</span>
+        <span>Tokens <strong style="color:var(--blue-neon)">auto-refresh every 2 hours</strong>. During verification, like service pauses briefly.</span>
+      </div>
+    </div>
+
+    <div style="margin-top:20px">
+      <div class="card-title" style="font-size:11px; margin-bottom:10px">SUPPORTED SERVERS</div>
+      <div class="server-grid">
+        <div class="server-badge">BD</div>
+        <div class="server-badge">IND</div>
+        <div class="server-badge">BR</div>
+        <div class="server-badge">US</div>
+        <div class="server-badge">SAC</div>
+        <div class="server-badge">NA</div>
+        <div class="server-badge">SG</div>
+        <div class="server-badge">TH</div>
+        <div class="server-badge">VN</div>
+        <div class="server-badge">ID</div>
+        <div class="server-badge">TW</div>
+        <div class="server-badge">RU</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-line"></div>
+  <div class="footer-text">
+    CSR YEAMIN LIKE WEB © 2025 — BUILT BY <span>CSR YEAMIN</span> — ALL RIGHTS RESERVED
+  </div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════
+// CURSOR
+// ═══════════════════════════════════════
+const cursor = document.getElementById('cursor');
+const trail  = document.getElementById('cursorTrail');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+  setTimeout(() => {
+    trail.style.left = e.clientX + 'px';
+    trail.style.top  = e.clientY + 'px';
+  }, 80);
+});
+
+// ═══════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════
+const pc = document.getElementById('particles');
+for (let i = 0; i < 40; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.cssText = `
+    left: ${Math.random()*100}%;
+    animation-duration: ${6+Math.random()*12}s;
+    animation-delay: ${Math.random()*10}s;
+    --drift: ${(Math.random()-0.5)*100}px;
+    opacity: ${0.3+Math.random()*0.7};
+    width: ${1+Math.random()*2}px;
+    height: ${1+Math.random()*2}px;
+  `;
+  pc.appendChild(p);
+}
+
+// ═══════════════════════════════════════
+// LIVE LOG — POLLING (Render-safe)
+// SSE Render-এ বারবার disconnect করে,
+// তাই প্রতি ৩ সেকেন্ডে /logs/poll call করি
+// ═══════════════════════════════════════
+const logBox = document.getElementById('logBox');
+let logCount  = 0;
+let lastLogId = 0;
+const MAX_LOGS = 300;
+
+function classifyLog(msg) {
+  if (msg.includes('CHECKING TOKEN')) return 'check';
+  if (msg.includes('[SYSTEM]'))       return 'sys';
+  if (
+    msg.includes(' OK') || msg.includes('DONE') ||
+    msg.includes('valid') || msg.includes('Resuming') ||
+    msg.includes('✓')
+  ) return 'ok';
+  if (
+    msg.includes('[ERROR]') || msg.includes('FAILED') ||
+    msg.includes('expired') || msg.includes('✗')
+  ) return 'err';
+  if (msg.includes('[WARN]') || msg.includes('[FAIL]')) return 'warn';
+  return '';
+}
+
+function appendLog(msg) {
+  if (!msg || msg.trim() === '') return;
+  const span = document.createElement('span');
+  span.className = 'log-line ' + classifyLog(msg);
+  span.textContent = msg;
+  logBox.appendChild(span);
+  logCount++;
+  if (logCount > MAX_LOGS) {
+    const lines = logBox.querySelectorAll('.log-line');
+    for (let i = 0; i < lines.length - MAX_LOGS; i++) lines[i].remove();
+    logCount = MAX_LOGS;
+  }
+  logBox.scrollTop = logBox.scrollHeight;
+}
+
+function clearLogs() {
+  logBox.innerHTML = '';
+  logCount = 0;
+  appendLog('[SYSTEM] Log cleared.');
+}
+
+async function pollLogs() {
+  try {
+    const resp = await fetch(`/logs/poll?after=${lastLogId}`);
+    const data = await resp.json();
+    if (data.lines && data.lines.length > 0) {
+      data.lines.forEach(l => appendLog(l.msg));
+      lastLogId = data.last_id;
+    }
+  } catch (e) {
+    // server temporarily unreachable — চুপ থাকো
+  }
+}
+
+// প্রথমবার সাথে সাথে
+appendLog('[SYSTEM] Connecting to log server...');
+pollLogs();
+// প্রতি ৩ সেকেন্ডে poll
+setInterval(pollLogs, 3000);
+
+// ═══════════════════════════════════════
+// TOKEN STATUS POLLING
+// ═══════════════════════════════════════
+let _nextRefreshTs = 0;
+let _totalRefreshSecs = 2 * 3600;
+let _isCheckingMode   = false;
+
+function fetchTokenStatus() {
+  fetch('/token_status')
+    .then(r => r.json())
+    .then(data => {
+      const cnt      = data.total_tokens || 0;
+      const checking = data.checking_mode || false;
+      _isCheckingMode  = checking;
+      _nextRefreshTs   = data.next_refresh_ts || 0;
+
+      // Status bar
+      document.getElementById('tokenCountStatus').textContent =
+        checking ? '⚠ CHECKING TOKEN...' : `${cnt} TOKENS ACTIVE`;
+
+      const tDot = document.getElementById('tokenDot');
+      tDot.className = 'status-dot' + (checking ? ' red' : '');
+
+      // Checking notice
+      const notice = document.getElementById('checkingNotice');
+      if (checking) {
+        notice.classList.add('show');
+      } else {
+        notice.classList.remove('show');
+      }
+
+      // Send button state
+      const btn = document.getElementById('sendBtn');
+      if (checking) {
+        btn.classList.add('disabled-check');
+        btn.innerHTML = '⏳ CHECKING TOKEN... <div class="loading-bar" id="loadingBar"></div>';
+      } else if (!btn.classList.contains('loading')) {
+        btn.classList.remove('disabled-check');
+        if (!btn.innerHTML.includes('SEND LIKES')) {
+          btn.innerHTML = '⚡ SEND LIKES <div class="loading-bar" id="loadingBar"></div>';
+        }
+      }
+
+      // Token grid
+      const grid = document.getElementById('tokenGrid');
+      grid.innerHTML = '';
+      if (data.tokens && data.tokens.length > 0) {
+        data.tokens.forEach(t => {
+          const item = document.createElement('div');
+          item.className = 'token-item';
+          item.innerHTML = `
+            <div class="token-dot ${checking ? 'checking' : ''}"></div>
+            <div>
+              <div class="token-uid">${t.uid}</div>
+              <div class="token-info">${t.region} · ${checking ? 'CHECKING' : 'ACTIVE'}</div>
+            </div>
+          `;
+          grid.appendChild(item);
+        });
+      } else {
+        grid.innerHTML = '<div class="token-item"><div class="token-dot"></div><span class="token-info">Generating...</span></div>';
+      }
+    })
+    .catch(() => {
+      document.getElementById('tokenCountStatus').textContent = 'SERVER OFFLINE';
+    });
+}
+
+// প্রথমবার এবং প্রতি ১০ সেকেন্ডে
+fetchTokenStatus();
+setInterval(fetchTokenStatus, 10000);
+
+// ═══════════════════════════════════════
+// REFRESH COUNTDOWN TIMER (client-side)
+// ═══════════════════════════════════════
+function updateTimer() {
+  const now = Math.floor(Date.now() / 1000);
+  if (_nextRefreshTs <= 0) {
+    document.getElementById('timerVal').textContent = '--:--:--';
+    document.getElementById('refreshFill').style.width = '0%';
+    return;
+  }
+  let remaining = _nextRefreshTs - now;
+  if (remaining < 0) remaining = 0;
+
+  const h = Math.floor(remaining / 3600);
+  const m = Math.floor((remaining % 3600) / 60);
+  const s = remaining % 60;
+  document.getElementById('timerVal').textContent =
+    String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+
+  const pct = Math.min(100, (remaining / _totalRefreshSecs) * 100);
+  document.getElementById('refreshFill').style.width = pct + '%';
+}
+
+setInterval(updateTimer, 1000);
+
+// ═══════════════════════════════════════
+// SEND LIKES
+// ═══════════════════════════════════════
+async function sendLikes() {
+  if (_isCheckingMode) {
+    showError('⏳ CHECKING TOKEN — Token verification in progress. Please wait and try again.');
+    return;
+  }
+
+  const uid    = document.getElementById('uidInput').value.trim();
+  const server = document.getElementById('serverSelect').value;
+  const btn    = document.getElementById('sendBtn');
+  const errDiv = document.getElementById('errorMsg');
+  const panel  = document.getElementById('resultPanel');
+
+  errDiv.classList.remove('show');
+  panel.classList.remove('show');
+
+  if (!uid)             { showError('❌ Please enter a Player UID.'); return; }
+  if (!server)          { showError('❌ Please select a Server Region.'); return; }
+  if (!/^\d+$/.test(uid)) { showError('❌ UID must contain numbers only.'); return; }
+
+  btn.classList.add('loading');
+  btn.innerHTML = '⏳ PROCESSING... <div class="loading-bar" id="loadingBar"></div>';
+  animateLoadingBar();
+
+  try {
+    const resp = await fetch(`/like?uid=${encodeURIComponent(uid)}&server_name=${encodeURIComponent(server)}`);
+    const data = await resp.json();
+
+    if (resp.status === 503 || data.error) {
+      showError('⚠️ ' + (data.error || 'Server error. Try again.'));
+    } else {
+      showResult(data);
+    }
+  } catch (err) {
+    showError('🔌 Cannot connect to server. Make sure the app is running.');
+  } finally {
+    btn.classList.remove('loading');
+    btn.innerHTML = '⚡ SEND LIKES <div class="loading-bar" id="loadingBar"></div>';
+  }
+}
+
+function animateLoadingBar() {
+  const bar = document.getElementById('loadingBar');
+  if (!bar) return;
+  let w = 0;
+  const iv = setInterval(() => {
+    w += Math.random() * 15;
+    if (w > 90) { clearInterval(iv); w = 92; }
+    bar.style.width = w + '%';
+  }, 300);
+}
+
+function showError(msg) {
+  const errDiv = document.getElementById('errorMsg');
+  errDiv.textContent = msg;
+  errDiv.classList.add('show');
+}
+
+function showResult(data) {
+  document.getElementById('rName').textContent   = data.PlayerNickname || '—';
+  document.getElementById('rUID').textContent    = data.UID || '—';
+  document.getElementById('rBefore').textContent = (data.LikesbeforeCommand ?? '—').toLocaleString();
+  document.getElementById('rAfter').textContent  = (data.LikesafterCommand  ?? '—').toLocaleString();
+  document.getElementById('rGiven').textContent  = '+' + (data.LikesGivenByAPI ?? '0');
+  document.getElementById('rStatus').textContent = data.status === 1 ? '✅ LIKES SENT SUCCESSFULLY' : '⚠️ ALREADY LIKED / MAX REACHED';
+
+  const panel = document.getElementById('resultPanel');
+  panel.classList.add('show', 'success-anim');
+  setTimeout(() => panel.classList.remove('success-anim'), 1200);
+}
+
+document.getElementById('uidInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendLikes();
+});
+
+// Card glow on hover
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width)  * 100;
+    const y = ((e.clientY - r.top)  / r.height) * 100;
+    card.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(0,60,120,0.5), rgba(0,15,40,0.85))`;
+  });
+  card.addEventListener('mouseleave', () => { card.style.background = ''; });
+});
+</script>
+</body>
+</html>

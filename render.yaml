@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: CSR YEAMIN-like-web
+    runtime: python
+    region: singapore
+    plan: free
+
+    buildCommand: pip install -r requirements.txt
+
+    # gunicorn.conf.py তে on_starting hook আছে
+    # সেখান থেকে scheduler শুরু হবে — Render terminal এ দেখাবে
+    startCommand: gunicorn wsgi:app --config gunicorn.conf.py --bind 0.0.0.0:$PORT
+
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+
+    healthCheckPath: /
+
+    autoDeploy: true
